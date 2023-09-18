@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Início - Sistema de Recomendação de Filmes</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='background_popcorn.jpeg') }}');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat; /* Evita que a imagem seja repetida */
+            height: 100vh;
+        }
+
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .btn {
+            background-color: #888888;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Recomendação de Filmes</h1>
+        <p>Este é um sistema de recomendação de filmes que oferece sugestões altamente personalizadas para as suas preferências de visualização. O nosso sistema se baseia em uma seleção dos 1000 melhores filmes, conforme classificados pelo site IMDB.</p>
+        <p>Aqui está um guia sobre como aproveitar ao máximo este sistema:</p>
+        <ol>
+            <li><strong>Descreva suas preferências:</strong> Comece descrevendo o tipo de filme que você deseja assistir. Por exemplo, você pode escrever algo como "um filme sobre a Segunda Guerra Mundial que seja emocionante e tocante".</li>
+            <li><strong>Identifique um filme de referência:</strong> Em seguida, insira o nome de um filme que você acredita ser semelhante ao que descreveu acima. Certifique-se de pesquisar o título do filme em inglês e, em seguida, selecione-o na lista suspensa que aparecerá.</li>
+            <li><strong>Envie sua solicitação:</strong> Clique no botão "Enviar" para receber recomendações personalizadas. Logo abaixo do formulário, você verá uma lista com os 15 filmes que mais se aproximam da sua busca.</li>
+            <li><strong>Explore os detalhes:</strong> Ao encontrar um filme de interesse na lista, clique no nome dele para ser direcionado à página correspondente no IMDB. Lá, você poderá encontrar informações adicionais sobre o filme, incluindo avaliações, elenco e equipe técnica, bem como assistir ao trailer. Se você desejar saber onde pode assistir a esse filme, recomendamos procurá-lo no site <a href="https://www.justwatch.com/br" target="_blank">JustWatch</a>.</li>
+        </ol>
+        <p>Por favor, tenha em mente que, devido à nossa lista limitada de filmes, o sistema pode não fornecer recomendações ideais em todas as ocasiões. Caso as sugestões não atendam às suas expectativas, você pode experimentar ajustar a descrição ou escolher um filme de referência diferente. Estamos constantemente aprimorando nosso sistema para oferecer recomendações cada vez melhores e mais precisas.</p>
+        <div class="btn-container">
+            <a class="btn" href="/recommendation">Ir para Recomendações</a>
+        </div>
+    </div>
+</body>
+</html>

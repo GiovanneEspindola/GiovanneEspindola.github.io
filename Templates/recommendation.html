@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Recomendação de Filmes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        h1 {
+            color: white;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='background_popcorn.jpeg') }}');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat; /* Evita que a imagem seja repetida */
+            height: 100vh;
+        }
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #movieForm {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], select {
+            display: block;
+            margin: 10px auto;
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #recommendations {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        #recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #recommendations li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        #recommendations h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #recommendations a {
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+
+        #recommendations a:hover {
+            color: #0056b3;
+        }
+
+        #recommendations p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+
+        #recommendations img {
+            max-width: 100px;
+            height: auto;
+        }
+
+
+    .btn-home a {
+        color: black;
+        text-decoration: none; /* Remova o sublinhado dos links */
+    }
+
+
+    .btn-home a:hover {
+        /* Adicione estilos de hover se desejar */
+    }
+
+    </style>
+</head>
+<body>
+
+<h1>Sistema de Recomendações de Filmes</h1>
+
+
+<form id="movieForm" method="POST" action="/submit">
+    <input type="hidden" id="hidden_input_movie" name="user_input_movie">
+    <input type="text" id="text_input_text" name="user_input_text" placeholder="Quero assistir...">
+    <input type="text" id="text_input" name="user_input_movie" placeholder="Digite o nome de um filme">
+    <select id="dropdown"></select>
+    <button type="submit">Enviar</button>
+    <button class="btn-home"><a href="/">Página Inicial</a></button>
+</form>
+
+<!-- Div para exibir as recomendações -->
+<div id="recommendations">
+    <ol>
+        {% for recommendation in recommendations %}
+        <li>
+            <h3><a href="{{ recommendation.link }}" target="_blank">{{ recommendation.title}} ({{ recommendation.year}})</a></h3>
+
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+
+
+
+<script>
+    var user_movie_index = [];
+
+    // Função para lidar com a seleção da sugestão
+    function handleSelection() {
+        var user_input_movie = $("#dropdown").val();
+        if (user_input_movie) {
+            console.log("Item selecionado: " + user_input_movie);
+            // Define o valor do campo oculto com o valor selecionado
+            $("#hidden_input_movie").val(user_input_movie);
+        }
+    }
+
+    // Associa a função de manipulação ao envio do formulário
+    $("#movieForm").submit(function (event) {
+        event.preventDefault(); // Impede o envio do formulário padrão para que possamos manipulá-lo
+
+        handleSelection(); // Captura o valor do dropdown
+
+        // Captura o valor da primeira caixa de texto
+        var user_input_text = $("#text_input_text").val();
+        console.log("User Input (Text):", user_input_text);
+
+        // Continua com o envio do formulário
+        this.submit();
+    });
+
+    // Função para atualizar o dropdown com sugestões correspondentes ao texto digitado
+    function updateDropdown() {
+        var inputText = $("#text_input").val().toLowerCase();
+        var filteredUserMovieIndex = user_movie_index.filter(function (suggestion) {
+            return suggestion.toLowerCase().includes(inputText);
+        });
+        // Limpa e preenche o dropdown com as sugestões filtradas
+        $("#dropdown").empty();
+        $.each(filteredUserMovieIndex, function (index, value) {
+            $("#dropdown").append($("<option>").text(value));
+        });
+    }
+
+    // Carrega a lista de filmes do servidor Flask
+    $.ajax({
+        url: '/get_movie_index',
+        type: 'GET',
+        success: function(data) {
+            user_movie_index = data;
+        }
+    });
+
+    // Associa a função de atualização ao evento de mudança de texto
+    $("#text_input").on("input", function () {
+        updateDropdown();
+    });
+
+    // Função para exibir as recomendações
+    function showRecommendations(recommendedMovies) {
+        var recommendationsDiv = $("#recommendations");
+        var recommendedMoviesList = $("#recommended_movies");
+
+        recommendedMoviesList.empty(); // Limpa a lista de recomendações
+
+        // Preenche a lista de recomendações com os filmes recomendados
+        $.each(recommendedMovies, function (index, movie) {
+            recommendedMoviesList.append($("<li>").text(movie.title + " (Score: " + movie.score.toFixed(4) + ")"));
+        });
+
+        recommendationsDiv.show(); // Exibe a seção de recomendações
+    }
+
+
+    showRecommendations(recommendedMovies);
+
+</script>
+
+</body>
+</html>
