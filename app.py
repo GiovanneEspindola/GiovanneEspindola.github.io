@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -13,7 +13,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 
-app = Flask(__name__, template_folder='Templates')
+app = Flask(__name__)
 
 # Carregue seu DataFrame e faça o pré-processamento, se necessário
 df = pd.read_csv('df_mil_completo.tsv', delimiter='\t')
@@ -76,7 +76,7 @@ def recommend_movies(movie_index, cosine_similarities, num_recommendations=15):
 # Rota inicial
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_from_directory('', 'index.html')
 
 # Rota para a página de recomendação
 @app.route('/recommendation')
